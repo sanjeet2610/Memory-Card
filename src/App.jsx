@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useEffect } from "react";
 import Card from "./Card";
 import ScoreBoard from "./scoreBoard";
+import "./App.css";
 
 function App() {
   const [currScore, setCurrScore] = useState(0);
@@ -63,11 +64,13 @@ function App() {
   }
 
   return (
-    <div>
+    <div className="memory-game">
       <ScoreBoard currScore={currScore} bestScore={bestScore}></ScoreBoard>
-      {cards.map((card) => (
-        <Card key={card.id} card={card} handleCardClick={handleCardClick} />
-      ))}
+      <div className="cardlist">
+        {cards.map((card) => (
+          <Card key={card.id} card={card} handleCardClick={handleCardClick} />
+        ))}
+      </div>
     </div>
   );
 }
