@@ -28,4 +28,4 @@ https://698f7f85d9bbad4ebd99f97c--memocard-game.netlify.app/
 - async / await and Promise.all
 - State immutability
 - Fisher–Yates shuffle algorithm
-- Component-bas
+- Component-based architecture
