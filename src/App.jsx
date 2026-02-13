@@ -8,14 +8,41 @@ function App() {
   const [bestScore, setBestScore] = useState(0);
   const [cards, setCards] = useState([]);
   const [clickedCardIds, setClickedCardsIds] = useState([]);
+
+  function shuffleCards(cards) {
+    const array = [...cards];
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+
+      [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+  }
+
   useEffect(() => {
-    const tempCards = [
-      { id: 1, name: "Apple", image: "img1" },
-      { id: 2, name: "Banana", image: "img2" },
-    ];
-    setCards(tempCards);
+    async function fetchingPokemon() {
+      const response = await fetch(
+        "https://pokeapi.co/api/v2/pokemon?limit=20",
+      );
+      const data = await response.json();
+      const detailedData = await Promise.all(
+        data.results.map(async (pokemon) => {
+          const res = await fetch(pokemon.url);
+          const pokeData = await res.json();
+          return pokeData;
+        }),
+      );
+      const formattedCards = detailedData.map((pokemon) => {
+        return {
+          id: pokemon.id,
+          name: pokemon.name,
+          image: pokemon.sprites.front_default,
+        };
+      });
+      setCards(shuffleCards(formattedCards));
+    }
+    fetchingPokemon();
   }, []);
-  console.log(cards);
 
   function handleCardClick(id) {
     if (clickedCardIds.includes(id)) {
@@ -35,15 +62,6 @@ function App() {
     setCards((prev) => shuffleCards(prev));
   }
 
-  function shuffleCards(cards) {
-    const array = [...cards];
-    for (let i = array.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-
-      [array[i], array[j]] = [array[j], array[i]];
-    }
-    return array;
-  }
   return (
     <div>
       <ScoreBoard currScore={currScore} bestScore={bestScore}></ScoreBoard>
